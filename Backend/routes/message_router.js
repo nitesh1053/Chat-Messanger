@@ -4,12 +4,10 @@ const express = require('express');
 const router = express.Router();
 
 // const auth = require("../middlewares/auth");
-const authController = require('../controllers/auth_contoller');
+const messageController = require('../controllers/message_controller');
 
-router.post('/signup', authController.userSignup);
-router.post('/login', authController.loginUser);
-router.post('/change-password',  authController.changePassword);
-// router.post('/forgot-password', auth, authController.forgotPassword);
+router.post('/', messageController.addMessage);
+router.get('/chatId', messageController.getMessageByChatId);
 
 module.exports = router;
 

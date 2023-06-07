@@ -27,7 +27,7 @@ async function getChatByUserId(req, res, next) {
       if (!userId) throw new MissingParamError('userId');
       const savedChat = await chatRepo.getChatByUserId(userId);
 
-      if (!_.isEmpty(savedChat)) throw new ResourceNotFoundError({
+      if (_.isEmpty(savedChat)) throw new ResourceNotFoundError({
         resource: 'chat', type: ResourceNotFoundError.types.DATABASE_DOCUMENT, id: { userId },
       });
 
@@ -50,7 +50,7 @@ async function getChatForUsers(req, res, next) {
 
        const savedChat = await chatRepo.getChatByUserIds(userIds);
 
-       if (!_.isEmpty(savedChat)) throw new HttpStatusError(httpErrorStatusCodes.NOT_FOUND, `No chat Found for these usedIds: ${firstUserId}, ${secondUserId}`);
+       if (_.isEmpty(savedChat)) throw new HttpStatusError(httpErrorStatusCodes.NOT_FOUND, `No chat Found for these usedIds: ${firstUserId}, ${secondUserId}`);
  
        return res.send(genericDtl.getResponseDto(savedChat));
 
@@ -59,6 +59,7 @@ async function getChatForUsers(req, res, next) {
       return next(err);
     }
 }
+
 module.exports = {
     addChat,
     getChatByUserId,
