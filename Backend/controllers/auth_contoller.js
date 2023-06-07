@@ -7,7 +7,7 @@ const _ = require('underscore');
 async function loginUser(req, res, next) {
   const reqBodyForLog = Object.assign({}, req.body);
   delete reqBodyForLog.password;
-  console.log('controller', 'loginForAdmin', JSON.stringify(reqBodyForLog));
+  console.log('controller', 'loginUser', JSON.stringify(reqBodyForLog));
 
   const model = req.body;
   try {
@@ -22,7 +22,7 @@ async function loginUser(req, res, next) {
     const loginRes = await userService.loginForUser(loginData);
     return res.send(loginRes);
   } catch (err) {
-    console.log(`Error in loginForAdmin: ${JSON.stringify(err)}`);
+    console.log(`Error in loginUser: ${JSON.stringify(err)}`);
     return next(err);
   }
 }
@@ -48,7 +48,7 @@ async function userSignup(req, res, next) {
 }
 
 async function changePassword(req, res, next) {
-  console.log('controller', 'changePasswordForAdmin', JSON.stringify(_.omit(req.body, ['currentPassword', 'newPassword'])));
+  console.log('controller', 'changePassword', JSON.stringify(_.omit(req.body, ['currentPassword', 'newPassword'])));
   const { currentPassword, newPassword, userId } = req.body;
   try {
     if (!currentPassword) throw new MissingParamError('currentPassword');
@@ -58,7 +58,7 @@ async function changePassword(req, res, next) {
     const response = await userService.checkAndChangePasswordForUser(userId, currentPassword, newPassword);
     return res.send(response);
   } catch (err) {
-    console.log(`Error in handling change password request for adminUser. Err: ${err}`);
+    console.log(`Error in handling change password request for users. Err: ${err}`);
     return next(err);
   }
 }
