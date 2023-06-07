@@ -19,7 +19,7 @@ async function loginUser(req, res, next) {
       password: model.password,
     };
 
-    const loginRes = await userService.loginForAdmin(loginData);
+    const loginRes = await userService.loginForUser(loginData);
     return res.send(loginRes);
   } catch (err) {
     console.log(`Error in loginForAdmin: ${JSON.stringify(err)}`);
@@ -30,7 +30,7 @@ async function loginUser(req, res, next) {
 
 async function userSignup(req, res, next) {
   console.log(`Signup request: ${JSON.stringify(req.body)}`);
-  const { email} = req.params;
+  // const { email} = req.params;
   const { name, email, phone, password } = req.body;
   try {
 
@@ -49,13 +49,13 @@ async function userSignup(req, res, next) {
 
 async function changePassword(req, res, next) {
   console.log('controller', 'changePasswordForAdmin', JSON.stringify(_.omit(req.body, ['currentPassword', 'newPassword'])));
-  const { currentPassword, newPassword, adminUserId } = req.body;
+  const { currentPassword, newPassword, userId } = req.body;
   try {
     if (!currentPassword) throw new MissingParamError('currentPassword');
     if (!newPassword) throw new MissingParamError('newPassword');
-    if (!adminUserId) throw new MissingParamError('adminUserId');
+    if (!userId) throw new MissingParamError('userId');
 
-    const response = await userService.checkAndChangePasswordForUser(adminUserId, currentPassword, newPassword);
+    const response = await userService.checkAndChangePasswordForUser(userId, currentPassword, newPassword);
     return res.send(response);
   } catch (err) {
     console.log(`Error in handling change password request for adminUser. Err: ${err}`);

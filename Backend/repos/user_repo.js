@@ -1,8 +1,12 @@
 const db = require('../schemas/user_schema');
 const encryptionUtils = require('../utils/encryption');
 
-async function createUser(email) {
-    return db.findOne({ email }).lean();
+async function createUser(model) {
+    const { name, email, phone, hashedPassword } = model;
+
+    return db.create({
+      name, email, phone, password: hashedPassword,
+    });
 }
 
 async function getUserByEmail(email) {
@@ -36,5 +40,5 @@ module.exports = {
     createUser,
     getUserByPhone,
     getUserById,
-    
+    getUserByIDAndChangePassword,
 };
