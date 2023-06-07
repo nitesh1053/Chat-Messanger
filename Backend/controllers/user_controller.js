@@ -10,8 +10,8 @@ async function updateUserById(req, res, next) {
     const model = req.body;
     try {
       if (!userId) throw new MissingParamError('userId');
-      const updatedUser = await userRepo.updateUser(userId, model);
-      return res.send(genericDtl.getResponseDto(updatedUser));
+       await userRepo.updateUser(userId, model);
+      return res.send(genericDtl.getResponseDto({}));
 
     } catch (err) {
       console.log(`Error in updating user: ${JSON.stringify(err)}`);

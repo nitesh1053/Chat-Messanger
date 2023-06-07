@@ -6,11 +6,11 @@ const genericDtl = require('../dtl/generic');
 async function addChat(req, res, next) {
     console.log('controller', 'addChat', JSON.stringify(req.body));
   
-    const { senderId, receiverId } = req.body;
+    const { senderId, recieverId } = req.body;
     try {
       if (!senderId) throw new MissingParamError('senderId');
-      if (!receiverId) throw new MissingParamError('receiverId');
-      const members = [ senderId, receiverId];
+      if (!recieverId) throw new MissingParamError('recieverId');
+      const members = [ senderId, recieverId];
       const savedChat = await chatRepo.addChat({ members });
       return res.send(genericDtl.getResponseDto(savedChat));
 

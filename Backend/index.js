@@ -30,6 +30,12 @@ mongoose.connection.once('open', () => {
 });
 
 
+app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
+app.use('/api/chat', chatRoute);
+app.use('/api/message', messageRoute);
+
+
 function errorHandlerCustom(err, req, res, next) {
   console.log(`Error Handler Stack: ${err.stack}`);
   if (err instanceof MissingParamError) return res.status(400).send(`Missing Param: ${err.param}`);
@@ -39,10 +45,6 @@ function errorHandlerCustom(err, req, res, next) {
 }
 
 app.use(errorHandlerCustom);
-app.use('/api/auth', authRoute);
-app.use('/api/user', userRoute);
-app.use('/api/chat', chatRoute);
-app.use('/api/message', messageRoute);
 
 const port = (process.env.PORT);
 app.listen(port, () => {
@@ -92,8 +94,8 @@ io.on('connection', (socket) => {
   });
 
   // send and get message
-  socket.on('sendMessage', ({senderId, receiverId, text}) => {
-    const user = getUser(receiverId);
+  socket.on('sendMessage', ({senderId, recieverId, text}) => {
+    const user = getUser(recieverId);
     io.to(user.socketId).emit('getMessage', {
       senderId,
       text,

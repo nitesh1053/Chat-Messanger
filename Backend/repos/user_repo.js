@@ -21,9 +21,9 @@ async function getUserById(userId) {
     return db.findById(userId).lean();
 }
 
-async function getUserByIDAndChangePassword(adminUserID, newPassword) {
+async function getUserByIDAndChangePassword(userId, newPassword) {
     const encryptedPassword = await encryptionUtils.createHashedPassword(newPassword);
-    const filter = { _id: adminUserID };
+    const filter = { _id: userId };
     const update = {
       password: encryptedPassword,
       $unset: { resetPasswordToken: '' },
@@ -35,7 +35,8 @@ async function getUserByIDAndChangePassword(adminUserID, newPassword) {
 }
 
 async function updateUser(userId, data) {
-    return db.findOneAndUpdate({userId}, { $set: data } , { new: true }).lean();
+    const result = await db.findOneAndUpdate({_id: userId}, data , { new: true }).lean();
+    return result;
 }
 
 async function deleteUserById(userId) {

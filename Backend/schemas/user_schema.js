@@ -7,6 +7,8 @@ const userSchema = {
     email: { type: String, required: true },
     password: { type: String, required: true, min: 6, max: 20 },
     phone: { type: Number, required: false },
+    isPrivate: { type: Boolean, default: false },
+    followers
 };
 
 const schemaOptions = { toObject: { virtuals: true }, toJSON: { virtuals: true }, timestamps: true };
