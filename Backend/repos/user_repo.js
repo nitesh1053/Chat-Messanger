@@ -32,8 +32,16 @@ async function getUserByIDAndChangePassword(adminUserID, newPassword) {
   
     const result = await db.findOneAndUpdate(filter, update, options).lean();
     return result;
-  }
-  
+}
+
+async function updateUser(userId, data) {
+    return db.findOneAndUpdate({userId}, { $set: data } , { new: true }).lean();
+}
+
+async function deleteUserById(userId) {
+   return db.findByIdAndDelete(userId).lean();
+}
+
 
 module.exports = {
     getUserByEmail,
@@ -41,4 +49,6 @@ module.exports = {
     getUserByPhone,
     getUserById,
     getUserByIDAndChangePassword,
+    updateUser,
+    deleteUserById,
 };
