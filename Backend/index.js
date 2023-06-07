@@ -3,14 +3,18 @@ const app = express();
 const mongoose = require('mongoose');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-
-// const userRoute = require('./routes/user_router');
+const cors = require("cors");
+const userRoute = require('./routes/user_router');
 const authRoute = require('./routes/auth_router');
-// const chatRoute = require('./routes/chat_router');
-// const messageRoute = require('./routes/message_router');
+const chatRoute = require('./routes/chat_router');
+const messageRoute = require('./routes/message_router');
 // const path = require("path");
 const { MissingParamError, ResourceNotFoundError, HttpStatusError } = require('./utils/error');
 
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(process.env.DATABASE, {
   useUnifiedTopology: true,
@@ -25,25 +29,6 @@ mongoose.connection.once('open', () => {
   console.log('MongoDB Connected!');
 });
 
-// app.use("/images", express.static(path.join(__dirname, "public/images")));
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "public/images");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, req.body.name);
-//   },
-// });
-
-// const upload = multer({ storage: storage });
-// app.post("/api/upload", upload.single("file"), (req, res) => {
-//   try {
-//     return res.status(200).json("File uploded successfully");
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
 
 function errorHandlerCustom(err, req, res, next) {
   console.log(`Error Handler Stack: ${err.stack}`);
@@ -55,9 +40,9 @@ function errorHandlerCustom(err, req, res, next) {
 
 app.use(errorHandlerCustom);
 app.use('/api/auth', authRoute);
-// app.use('/api/user', userRoute);
-// app.use('/api/chats', chatRoute);
-// app.use('/api/messages', messageRoute);
+app.use('/api/user', userRoute);
+app.use('/api/chat', chatRoute);
+app.use('/api/message', messageRoute);
 
 const port = (process.env.PORT);
 app.listen(port, () => {
