@@ -1,5 +1,5 @@
 
-const { MissingParamError  } = require('../utils/error');
+const { MissingParamError, HttpStatusError, httpErrorStatusCodes,  } = require('../utils/error');
 const userService = require('../services/user_service');
 const authHelper = require('../helpers/auth_helper');
 const _ = require('underscore');
@@ -38,6 +38,10 @@ async function userSignup(req, res, next) {
     if (!email) throw new MissingParamError('email');
     if (!phone) throw new MissingParamError('phone');
     if (!password) throw new MissingParamError('password');
+    const emailRegex = /^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (!RegExp(emailRegex).test(email)) throw new  HttpStatusError(httpErrorStatusCodes.BAD_REQUEST, `Invalid Email: ${email}`);
+  if (password.length < 6) throw new  HttpStatusError(httpErrorStatusCodes.BAD_REQUEST, 'passsword must be at least 6 characters long');
 
     const signUpResponse = await authHelper.checkAndSignUpForUser({ name, email, phone, password });
     return res.send(signUpResponse);
