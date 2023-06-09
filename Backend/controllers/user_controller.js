@@ -35,13 +35,15 @@ async function deleteUserById(req, res, next) {
 }
 
 async function getUserById(req, res, next) {
-    console.log('controller', 'deleteUserById, userId: ',req.params);
+    console.log('controller', 'getUserById, userId: ',req.params);
   
     const { userId } = req.params;
     try {
       if (!userId) throw new MissingParamError('userId');
       const user = await userRepo.getUserById(userId);
       if (_.isEmpty(user)) throw new HttpStatusError(httpErrorStatusCodes.NOT_FOUND, `No user Found for this usedId: ${userId}`);
+      if (user.isPrivate) throw new HttpStatusError(httpErrorStatusCodes.UNAUTHORIZED,  'Private Account');
+      delete user.password;
       return res.send(genericDtl.getResponseDto(user));
 
     } catch (err) {

@@ -31,7 +31,7 @@ async function loginUser(req, res, next) {
 async function userSignup(req, res, next) {
   console.log(`Signup request: ${JSON.stringify(req.body)}`);
   // const { email} = req.params;
-  const { name, email, phone, password } = req.body;
+  const { name, email, phone, password, isPrivate } = req.body;
   try {
 
     if (!name) throw new MissingParamError('name');
@@ -43,7 +43,7 @@ async function userSignup(req, res, next) {
   if (!RegExp(emailRegex).test(email)) throw new  HttpStatusError(httpErrorStatusCodes.BAD_REQUEST, `Invalid Email: ${email}`);
   if (password.length < 6) throw new  HttpStatusError(httpErrorStatusCodes.BAD_REQUEST, 'passsword must be at least 6 characters long');
 
-    const signUpResponse = await authHelper.checkAndSignUpForUser({ name, email, phone, password });
+    const signUpResponse = await authHelper.checkAndSignUpForUser({ name, email, phone, password, isPrivate });
     return res.send(signUpResponse);
   } catch (err) {
     console.log(`Error in signing up: ${JSON.stringify(req.body)}. Err: ${err.stack}`);

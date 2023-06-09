@@ -2,10 +2,10 @@ const db = require('../schemas/user_schema');
 const encryptionUtils = require('../utils/encryption');
 
 async function createUser(model) {
-    const { name, email, phone, hashedPassword } = model;
+    const { name, email, phone, hashedPassword, isPrivate } = model;
 
     return db.create({
-      name, email, phone, password: hashedPassword,
+      name, email, phone, password: hashedPassword, isPrivate
     });
 }
 
