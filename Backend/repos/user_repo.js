@@ -42,6 +42,9 @@ async function updateUser(userId, data) {
 async function deleteUserById(userId) {
    return db.findByIdAndDelete(userId).lean();
 }
+async function getUsersByName(name) {
+     return db.find({ name: { $regex: new RegExp(name, 'i') } }).lean();
+ }
 
 
 module.exports = {
@@ -52,4 +55,5 @@ module.exports = {
     getUserByIDAndChangePassword,
     updateUser,
     deleteUserById,
+    getUsersByName,
 };

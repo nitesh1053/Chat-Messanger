@@ -2,6 +2,7 @@ const { MissingParamError, HttpStatusError, httpErrorStatusCodes,  } = require('
 const _ = require('underscore');
 const userRepo = require('../repos/user_repo');
 const genericDtl = require('../dtl/generic');
+const { getUserDto } = require('../dtl/user');
 
 async function updateUserById(req, res, next) {
     console.log('controller', 'updateUserById, userId: ',req.params, JSON.stringify(req.body));
@@ -52,8 +53,50 @@ async function getUserById(req, res, next) {
     }
 }
 
+async function searchUsersBySearchString(req, res, next) {
+  console.log('controller', 'searchUsersBySearchString',req.params);
+
+  const {  searchString } = req.params;
+  try {
+    if (!searchString) return  res.send(genericDtl.getResponseDto({}));
+    let users = await userRepo.getUsersByName(searchString);
+    if (_.isEmpty(users))  users = await userRepo.getUserByEmail(searchString);
+    if (_.isEmpty(users))  users = await userRepo.getUserByPhone(searchString);
+
+    if (_.isEmpty(users)) throw new HttpStatusError(httpErrorStatusCodes.NOT_FOUND, `No user Found for this searchString: ${searchString}`);
+    if (!Array.isArray(users)) users = [users];
+   const updatedUsers =  getUserDto(users);
+    return res.send(genericDtl.getResponseDto(updatedUsers));
+
+  } catch (err) {
+    console.log(`Error in searching users: ${JSON.stringify(err)}`);
+    return next(err);
+  }
+}
+
+async function changeModeForUser(req, res, next) {
+  console.log('controller', 'changeModeForUser, userId: ',req.params, JSON.stringify(req.body));
+
+  const { userId } = req.params;
+  const { reveal, open } = req.body;
+  const model = {
+    modes: { reveal, open },
+  };
+  try {
+    if (!userId) throw new MissingParamError('userId');
+     await userRepo.updateUser(userId, model);
+    return res.send(genericDtl.getResponseDto({}));
+
+  } catch (err) {
+    console.log(`Error in updating user: ${JSON.stringify(err)}`);
+    return next(err);
+  }
+}
+
 module.exports = {
     updateUserById,
     deleteUserById,
     getUserById,
-}
+    searchUsersBySearchString,
+    changeModeForUser,
+  };
